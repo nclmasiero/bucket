@@ -63,3 +63,10 @@ app.post("/copy", async (req, res) => {
 app.use(express.static("public"));
 
 app.listen(process.env.PORT, console.log("app running on port: " + process.env.PORT + " and environment: " + process.env.ENVIRONMENT));
+
+// check if the public dir exists
+if (!fs.existsSync("./public")) {
+  // if not, create it
+  console.log("Public dir not found. Creating one...");
+  fs.mkdirSync("./public");
+}
