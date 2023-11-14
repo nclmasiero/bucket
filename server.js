@@ -1,3 +1,5 @@
+require("dotenv").config();
+
 const express = require("express");
 const fs = require("fs");
 const bodyParser = require("body-parser");
@@ -12,16 +14,36 @@ app.get("/ping", (req, res) => {
 });
 
 app.post("/post", async (req, res) => {
-  const data = req.body.data;
-  if (!data) return res.sendStatus(400);
+  if (!req.body.name) return res.json({ result: false, message: "No file name specified" });
+  if (!req.body.extension) return res.json({ result: false, message: "No file extension specified" });
+  if (!req.body.bytes) return res.json({ result: false, message: "No bytes specified" });
 
-  console.log("new data received");
+  const path = "./public/" + req.body.name + "." + req.body.extension;
+  if (fs.existsSync(path)) return res.json({ result: false, message: "A file with this name already exists" });
 
-  fs.writeFileSync("./public/img.png", Buffer.from(data, "base64"));
+  console.log("received instruction to store at: " + path);
+  if (process.env.ENVIRONMENT == "production") fs.writeFileSync(path, Buffer.from(req.body.bytes, "base64"));
+  else {
+    fs.writeFileSync(path, Buffer.from("fake file"));
+    console.log("Testing environment detected. Pretending to save an image...");
+  }
   
-  res.sendStatus(200);
+  res.json({ result: true, message: "File saved at " + path, path: path });
+});
+
+app.post("/del", async (req, res) => {
+  if (!req.body.name) return res.json({ result: false, message: "No file name specified" });
+  if (!req.body.extension) return res.json({ result: false, message: "No file extension specified" });
+
+  const path = "./public/" + req.body.name + "." + req.body.extension;
+  if (!fs.existsSync(path)) return res.json({ result: false, message: "A file with that name does not exist" });
+
+  console.log("received instruction to delete at: " + path);
+  fs.unlinkSync(path);
+
+  res.json({ result: true, message: "File deleted at " + path, path: path });
 });
 
 app.use(express.static("public"));
 
-app.listen(3000, console.log("app running..."));
+app.listen(process.env.PORT, console.log("app running on port: " + process.env.PORT + " and environment: " + process.env.ENVIRONMENT));
