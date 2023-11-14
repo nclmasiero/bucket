@@ -44,6 +44,22 @@ app.post("/del", async (req, res) => {
   res.json({ result: true, message: "File deleted at " + path, path: path });
 });
 
+app.post("/copy", async (req, res) => {
+  if (!req.body.name) return res.json({ result: false, message: "No file name specified" });
+  if (!req.body.extension) return res.json({ result: false, message: "No file extension specified" });
+  if (!req.body.destination) return res.json({ result: false, message: "No destination specified" });
+
+  const path = "./public/" + req.body.name + "." + req.body.extension;
+  const newPath = "./public/" + req.body.destination + "." + req.body.extension;
+  if (!fs.existsSync(path)) return res.json({ result: false, message: "A file with that name does not exist" });
+  if (fs.existsSync(newPath)) return res.json({ result: false, message: "The destination file already exists" });
+
+  console.log("received instruction to copy from: " + path + " to " + newPath);
+  fs.copyFileSync(path, newPath);
+
+  res.json({ result: true, message: "File copied at " + newPath, path: newPath });
+});
+
 app.use(express.static("public"));
 
 app.listen(process.env.PORT, console.log("app running on port: " + process.env.PORT + " and environment: " + process.env.ENVIRONMENT));
