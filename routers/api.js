@@ -18,7 +18,11 @@ router.post("/post", async (req, res) => {
     console.log("Testing environment detected. Pretending to save an image...");
   }
   
-  res.json({ result: true, message: "File saved at " + path, path: path });
+  res.json({
+    result: true,
+    message: "File saved at " + path,
+    url: process.env.URL + req.body.name + "." + req.body.extension
+  });
 });
 
 router.post("/del", async (req, res) => {
@@ -31,7 +35,11 @@ router.post("/del", async (req, res) => {
   console.log("received instruction to delete at: " + path);
   fs.unlinkSync(path);
 
-  res.json({ result: true, message: "File deleted at " + path, path: path });
+  res.json({
+    result: true,
+    message: "File deleted at " + path,
+    url: process.env.URL + req.body.name + "." + req.body.extension
+  });
 });
 
 router.post("/copy", async (req, res) => {
@@ -47,7 +55,11 @@ router.post("/copy", async (req, res) => {
   console.log("received instruction to copy from: " + path + " to " + newPath);
   fs.copyFileSync(path, newPath);
 
-  res.json({ result: true, message: "File copied at " + newPath, path: newPath });
+  res.json({
+    result: true,
+    message: "File copied at " + newPath,
+    url: process.env.URL + req.body.destination + "." + req.body.extension
+  });
 });
 
 module.exports = router;
