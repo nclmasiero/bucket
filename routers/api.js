@@ -21,7 +21,7 @@ router.post("/post", async (req, res) => {
   res.json({
     result: true,
     message: "File saved at " + path,
-    url: process.env.URL + req.body.name + "." + req.body.extension
+    url: process.env.URL + "/" + req.body.name + "." + req.body.extension
   });
 });
 
@@ -38,7 +38,7 @@ router.post("/del", async (req, res) => {
   res.json({
     result: true,
     message: "File deleted at " + path,
-    url: process.env.URL + req.body.name + "." + req.body.extension
+    url: process.env.URL + "/" + req.body.name + "." + req.body.extension
   });
 });
 
@@ -58,7 +58,7 @@ router.post("/copy", async (req, res) => {
   res.json({
     result: true,
     message: "File copied at " + newPath,
-    url: process.env.URL + req.body.destination + "." + req.body.extension
+    url: process.env.URL + "/" + req.body.destination + "." + req.body.extension
   });
 });
 
