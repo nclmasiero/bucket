@@ -62,4 +62,22 @@ router.post("/copy", async (req, res) => {
   });
 });
 
+router.post("/exists", async (req, res) => {
+  if (!req.body.name) return res.json({ result: false, message: "No file name specified" });
+  if (!req.body.extension) return res.json({ result: false, message: "No file extension specified" });
+
+  // get the path
+  const path = "./public/" + req.body.name + "." + req.body.extension;
+
+  // check if the file exists
+  const result = fs.existsSync(path);
+
+  // return the result
+  return {
+    result: result,
+    message: "File checked at " + path,
+    url: result ? process.env.URL + "/" + req.body.name + "." + req.body.extension : "",
+  }
+})
+
 module.exports = router;
