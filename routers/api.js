@@ -76,11 +76,11 @@ router.post("/exists", async (req, res) => {
   const result = fs.existsSync(path);
 
   // return the result
-  return {
+  res.json({
     result: result,
     message: "File checked at " + path,
     url: result ? process.env.URL + "/" + req.body.name + "." + req.body.extension : "",
-  }
+  });
 })
 
 module.exports = router;
