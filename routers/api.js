@@ -69,6 +69,9 @@ router.post("/exists", async (req, res) => {
   // get the path
   const path = "./public/" + req.body.name + "." + req.body.extension;
 
+  // log the request
+  console.log("received instruction to check existence at: " + path);
+
   // check if the file exists
   const result = fs.existsSync(path);
 
